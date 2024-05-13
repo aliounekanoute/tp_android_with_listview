@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Exemple with ListView</string>
+
+    <string name="ShapeAppearanceOverlayExtended" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">0dp</item>
+    </string>
+</resources>
