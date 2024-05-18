@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,13 +26,55 @@ public class MainActivity extends AppCompatActivity {
     MangaCharacterAdapter mangaCharacterAdapter;
     ListView listView;
 
+    Button addButton;
+
+    MyDatabaseHelper myDatabaseHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        myDatabaseHelper = new MyDatabaseHelper(this);
+        //initDatabase();
 
         listView = findViewById(R.id.characters_list);
+
+        addButton = findViewById(R.id.add_button);
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), AddCharacterActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        initView();
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        initView();
+    }
+
+    private void initDatabase() {
+        for(MangaCharacter character: characters) {
+            myDatabaseHelper.save(character);
+        }
+    }
+
+    private MangaCharacter[] getCharacters() {
+        return myDatabaseHelper.findAll().toArray(new MangaCharacter[0]);
+    }
+
+    private void initView() {
+
+        characters = getCharacters();
         mangaCharacterAdapter = new MangaCharacterAdapter(this, R.layout.row, characters);
+        //mangaCharacterAdapter = new MangaCharacterAdapter(this, R.layout.row, getCharacters());
+
         listView.setAdapter(mangaCharacterAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -42,6 +85,5 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
 }
